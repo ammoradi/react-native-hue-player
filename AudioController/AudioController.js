@@ -23,6 +23,8 @@ class AudioController {
 		//Indice do áudio atual
 		this.currentIndex = 0;
 
+		this.myStatus = 'PAUSED';
+
 		//Callbacks
 		this.currentAudioListener = () => null;
 		this.currentTimeListener = () => null;
@@ -74,6 +76,7 @@ class AudioController {
 	}
 
 	onStatusChanged(status) {
+		this.myStatus = status;
 		if (status === 'PAUSED' || status === 'PLAYING') {
 			//Atualiza a duração do áudio streaming após mudança de estado
 			this.getDuration(seconds => {
@@ -93,13 +96,13 @@ class AudioController {
 		this.musicControlReset();
 		this.currentAudio = audio;
 		//Verificar se o arquivo de áudio já foi baixado para definir player
-		if (this.currentAudio.path) {
+		if (this.currentAudio.onlineUrl) {
 			//Áudio offline, this.player será instância do Sound
 			this.type = 'offline';
 
 			Sound.setCategory('Playback');
-			this.player = new Sound(this.currentAudio.path,
-				Sound.MAIN_BUNDLE,
+			this.player = new Sound(this.currentAudio.url,
+				'',
 				(error) => {
 					if (error) return;
 
@@ -143,7 +146,8 @@ class AudioController {
 		if (this.type === 'streaming') {
 			this.player.play();
 		} else {
-			this.player.play(this.onAudioFinish.bind(this));
+			// this.player.play(this.onAudioFinish.bind(this));
+			this.player.play();
 		}
 
 		//Starta função que executa callback de tempo atual do som
@@ -265,6 +269,14 @@ class AudioController {
 		});
 	}
 
+	getCurrentIndex() {
+		return this.currentIndex;
+	}
+
+	getCurrentstatus() {
+		return this.myStatus;
+	}
+
 	//------------ Callbacks ------------//	
 
 	//Inicializa o current time listener
@@ -337,8 +349,10 @@ class AudioController {
 	//------------Alterar Estados do Music Control------------//
 
 	musicControlsEnableControls() {
-		MusicControl.enableControl('skipBackward', true, { interval: 30 });
-		MusicControl.enableControl('skipForward', true, { interval: 30 });
+		// MusicControl.enableControl('skipBackward', true, { interval: 30 });
+		// MusicControl.enableControl('skipForward', true, { interval: 30 });
+		MusicControl.enableControl('previousTrack', true);
+		MusicControl.enableControl('nextTrack', true);
 		MusicControl.enableControl('play', true);
 		MusicControl.enableControl('pause', true);
 	}
@@ -404,6 +418,12 @@ class AudioController {
 		MusicControl.on('play', () => {
 			this.play();
 			this.musicControlPlay();
+		});
+		MusicControl.on('previousTrack', () => {
+			this.playPrevious();
+		});
+		MusicControl.on('nextTrack', () => {
+			this.playNext();
 		});
 		MusicControl.on('skipForward', () => {
 			this.skip(30);
