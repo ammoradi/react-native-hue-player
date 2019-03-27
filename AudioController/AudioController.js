@@ -96,13 +96,13 @@ class AudioController {
 		this.musicControlReset();
 		this.currentAudio = audio;
 		//Verificar se o arquivo de áudio já foi baixado para definir player
-		if (this.currentAudio.onlineUrl) {
+		if (this.currentAudio.path) {
 			//Áudio offline, this.player será instância do Sound
 			this.type = 'offline';
 
 			Sound.setCategory('Playback');
-			this.player = new Sound(this.currentAudio.url,
-				'',
+			this.player = new Sound(this.currentAudio.path,
+				Sound.MAIN_BUNDLE,
 				(error) => {
 					if (error) return;
 
@@ -146,8 +146,7 @@ class AudioController {
 		if (this.type === 'streaming') {
 			this.player.play();
 		} else {
-			// this.player.play(this.onAudioFinish.bind(this));
-			this.player.play();
+			this.player.play(this.onAudioFinish.bind(this));
 		}
 
 		//Starta função que executa callback de tempo atual do som
