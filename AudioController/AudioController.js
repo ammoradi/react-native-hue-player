@@ -54,6 +54,12 @@ class AudioController {
 	 * @param {*Function} onChangeCurrentTime 
 	 */
 	init(playlist, track = 0, onChangeStatus, onChangeCurrentTime) {
+		if ((this.currentAudio.key === playlist[track].key) && this.myStatus === 'PLAYING') {
+			this.onChangeStatus = onChangeStatus;
+			this.onChangeCurrentTime = onChangeCurrentTime;
+			return;
+		}
+
 		this.playlist = playlist;
 
 		//Seta áudio atual como a track que o usuário passou
@@ -274,6 +280,10 @@ class AudioController {
 
 	getCurrentstatus() {
 		return this.myStatus;
+	}
+
+	getCurrentAudio() {
+		return this.currentAudio;
 	}
 
 	//------------ Callbacks ------------//	

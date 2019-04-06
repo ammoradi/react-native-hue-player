@@ -63,13 +63,27 @@ class AudioControls extends Component {
     constructor(props) {
         super(props);
 
+        const { playlist, initialTrack } = this.props;
+
         this.state = {
             duration: 0,
             currentTime: 0,
-            currentAudio: {},
+            currentAudio: AudioController.currentAudio || {},
             isReady: true,
-            isPlaying: false
+            isPlaying: (AudioController.currentAudio.key === playlist[initialTrack].key) && AudioController.myStatus === 'PLAYING'
         };
+
+        console.log(props.playlist)
+
+        if (AudioController.myStatus === 'PLAYING') {
+            AudioController.getDuration((seconds) => {
+                this.state.duration = seconds;
+            });
+        }
+
+        // if ( currentStatus === 'PLAYING' ) {
+        //     AudioController.init(playlist, initialTrack, this.onChangeStatus, this.updateCurrentTime);
+        // }
     }
 
     componentWillMount() {
@@ -234,6 +248,7 @@ class AudioControls extends Component {
 
     render() {
         const { currentTime, duration, currentAudio } = this.state;
+
         return (
             <View style={[styles.container]}>
                 <View style={{ flex: 2.4 }}>
