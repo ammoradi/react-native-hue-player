@@ -54,12 +54,6 @@ class AudioController {
 	 * @param {*Function} onChangeCurrentTime 
 	 */
 	init(playlist, track = 0, onChangeStatus, onChangeCurrentTime) {
-		if ((this.currentAudio.key === playlist[track].key) && this.myStatus === 'PLAYING') {
-			this.onChangeStatus = onChangeStatus;
-			this.onChangeCurrentTime = onChangeCurrentTime;
-			return;
-		}
-
 		this.playlist = playlist;
 
 		//Seta áudio atual como a track que o usuário passou
@@ -263,11 +257,30 @@ class AudioController {
 			return; // O próximo indice deve ser um indice válido na playlist
 			//throw 'Playlist must contain index of next audio'
 		}
+
 		this.currentIndex = index;
+		this.currentAudio.currentTime = 0;
 		this.pause();
 		this.selectedAudio = this.playlist[this.currentIndex];
 		this.load(this.selectedAudio, (isLoaded) => {
 			this.play();
+			if (isLoaded) {
+				if (this.type !== 'streaming') this.onChangeStatus(this.status.LOADED);
+			} else return null;
+		});
+	}
+
+	setCurrentAudioIndex(index) {
+		if (!this.hasTrack(index)) {
+			return; // O próximo indice deve ser um indice válido na playlist
+			//throw 'Playlist must contain index of next audio'
+		}
+
+		this.currentIndex = index;
+		this.currentAudio.currentTime = 0;
+		this.pause();
+		this.selectedAudio = this.playlist[this.currentIndex];
+		this.load(this.selectedAudio, (isLoaded) => {
 			if (isLoaded) {
 				if (this.type !== 'streaming') this.onChangeStatus(this.status.LOADED);
 			} else return null;
@@ -280,10 +293,6 @@ class AudioController {
 
 	getCurrentstatus() {
 		return this.myStatus;
-	}
-
-	getCurrentAudio() {
-		return this.currentAudio;
 	}
 
 	//------------ Callbacks ------------//	
