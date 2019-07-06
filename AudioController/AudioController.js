@@ -75,6 +75,26 @@ class AudioController {
 			.addListener('RNAudioStreamerStatusChanged', this.onStatusChanged.bind(this));
 	}
 
+	destroy() {
+		this.paused = true;
+		this.playlist = [];
+
+		this.currentAudio = {};
+		this.type = 'streaming';
+
+		this.player = null;
+
+		this.currentIndex = 0;
+
+		this.myStatus = 'PAUSED';
+
+		this.currentAudioListener = () => null;
+		this.currentTimeListener = () => null;
+
+		this.onChangeStatus = () => null;
+		this.onChangeCurrentTime = () => null;
+	}
+
 	onStatusChanged(status) {
 		this.myStatus = status;
 		if (status === 'PAUSED' || status === 'PLAYING') {

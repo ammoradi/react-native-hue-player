@@ -73,10 +73,13 @@ class AudioControls extends Component {
     }
 
     componentWillMount() {
-        const { playlist, initialTrack, currentStatus } = this.props;
-        // if ( currentStatus !== 'PLAYING' ) {
-            AudioController.init(playlist, initialTrack, this.onChangeStatus, this.updateCurrentTime);
-        // }
+        const { playlist, initialTrack } = this.props;
+        AudioController.init(playlist, initialTrack, this.onChangeStatus, this.updateCurrentTime);
+    }
+
+    componentWillUnmount() {
+        AudioController.clearCurrentTimeListener();
+        AudioController.destroy();
     }
 
     onChangeStatus = (status) => {
