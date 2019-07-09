@@ -237,6 +237,7 @@ class AudioControls extends Component {
 
     render() {
         const { currentTime, duration, currentAudio } = this.state;
+
         return (
             <View style={[styles.container]}>
                 <View style={{ flex: 2.4 }}>
@@ -250,7 +251,7 @@ class AudioControls extends Component {
                         <Text style={this.props.nameStyle}>{currentAudio.name}</Text>
                         <Text style={this.props.titleStyle}>{currentAudio.title}</Text>
                         <Text style={this.props.authorStyle}>{currentAudio.author}</Text>
-                        <Text style={this.props.authorStyle}>({this.converToPersian(this.props.initialTrack + 1)}/{this.converToPersian(this.props.playlist.length)})</Text>
+                        {currentAudio.key !== 'Purchase' && <Text style={this.props.authorStyle}>({this.converToPersian(this.props.initialTrack + 1)}/{this.converToPersian(this.props.playlist.length)})</Text>}
                     </View>
                 </View>
                 
